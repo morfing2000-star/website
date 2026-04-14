@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-=======
-import crypto from 'node:crypto';
->>>>>>> main
 import { NextResponse } from 'next/server';
 import { containsProfanity } from '@/app/lib/profanity';
 
