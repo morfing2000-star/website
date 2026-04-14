@@ -20,6 +20,7 @@ export default function HomePage() {
         </div>
         <div style={{ display: 'flex', gap: 12 }}>
           <small className="muted">EN | EL</small>
+          <Link href="/auth" className="muted">Login</Link>
           <Link href="/admin" className="muted">Admin</Link>
         </div>
       </nav>
