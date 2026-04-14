@@ -1,0 +1,8 @@
+{
+  "nav.home": "Home",
+  "nav.trending": "Trending",
+  "auth.login": "Login",
+  "auth.signup": "Sign Up",
+  "player.skip_intro": "Skip intro",
+  "player.next_in": "Next episode in"
+}

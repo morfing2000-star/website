@@ -1,0 +1,168 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  OWNER
+  ADMIN
+  MODERATOR
+  USER
+}
+
+enum AnimeType {
+  SERIES
+  MOVIE
+}
+
+enum UploadStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model User {
+  id             String      @id @default(cuid())
+  email          String      @unique
+  passwordHash   String
+  emailVerified  DateTime?
+  role           Role        @default(USER)
+  avatarUrl      String?
+  bio            String?
+  isBanned       Boolean     @default(false)
+  banExpiresAt   DateTime?
+  profiles       Profile[]
+  sessions       Session[]
+  comments       Comment[]
+  notifications  Notification[]
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+}
+
+model Profile {
+  id               String    @id @default(cuid())
+  userId           String
+  displayName      String
+  isAdult          Boolean   @default(false)
+  favorites        Favorite[]
+  watchHistory     WatchHistory[]
+  ratings          Rating[]
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Anime {
+  id             String       @id @default(cuid())
+  title          String
+  description    String
+  genres         String[]
+  tags           String[]
+  coverImage     String
+  bannerImage    String
+  trailerVideo   String?
+  type           AnimeType
+  seasons        Season[]
+  movieFile      String?
+  ratings        Rating[]
+  comments       Comment[]
+  uploads        UploadJob[]
+  createdAt      DateTime     @default(now())
+}
+
+model Season {
+  id          String    @id @default(cuid())
+  animeId     String
+  number      Int
+  title       String
+  anime       Anime     @relation(fields: [animeId], references: [id], onDelete: Cascade)
+  episodes    Episode[]
+}
+
+model Episode {
+  id             String    @id @default(cuid())
+  seasonId        String
+  number          Int
+  title           String
+  description     String?
+  hlsMasterUrl    String
+  introStartSec   Int?
+  introEndSec     Int?
+  subtitles       String[]
+  season          Season    @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+}
+
+model UploadJob {
+  id          String       @id @default(cuid())
+  animeId      String
+  createdById  String
+  status       UploadStatus @default(PENDING)
+  inputPath    String
+  outputPath   String?
+  logs         String?
+  createdAt    DateTime     @default(now())
+  anime        Anime        @relation(fields: [animeId], references: [id], onDelete: Cascade)
+}
+
+model Comment {
+  id           String      @id @default(cuid())
+  animeId       String
+  userId        String
+  parentId      String?
+  body          String
+  likes         Int         @default(0)
+  dislikes      Int         @default(0)
+  isReported    Boolean     @default(false)
+  createdAt     DateTime    @default(now())
+  anime         Anime       @relation(fields: [animeId], references: [id], onDelete: Cascade)
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Rating {
+  id          String    @id @default(cuid())
+  profileId   String
+  animeId     String
+  value       Int
+  profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  anime       Anime     @relation(fields: [animeId], references: [id], onDelete: Cascade)
+}
+
+model Favorite {
+  id          String    @id @default(cuid())
+  profileId   String
+  animeId     String
+  profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+}
+
+model WatchHistory {
+  id           String    @id @default(cuid())
+  profileId     String
+  animeId       String
+  episodeId     String?
+  positionSec   Int
+  updatedAt     DateTime @updatedAt
+  profile       Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id          String    @id @default(cuid())
+  userId      String
+  title       String
+  message     String
+  read        Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Session {
+  id           String    @id @default(cuid())
+  userId        String
+  token         String    @unique
+  ipAddress     String?
+  userAgent     String?
+  expiresAt     DateTime
+  createdAt     DateTime  @default(now())
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
