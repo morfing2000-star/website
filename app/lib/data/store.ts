@@ -1,5 +1,3 @@
-import crypto from 'node:crypto';
-
 export type AppRole = 'OWNER' | 'ADMIN' | 'MODERATOR' | 'USER';
 
 export type DemoUser = {
@@ -34,7 +32,7 @@ const animeList: DemoAnime[] = [
 ];
 
 export function newToken() {
-  return crypto.randomBytes(24).toString('hex');
+  return `${crypto.randomUUID()}${crypto.randomUUID()}`.replace(/-/g, '');
 }
 
 export function getUserByEmail(email: string) {

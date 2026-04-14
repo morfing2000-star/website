@@ -1,4 +1,3 @@
-import crypto from 'node:crypto';
 import { NextResponse } from 'next/server';
 import { containsProfanity } from '@/app/lib/profanity';
 
