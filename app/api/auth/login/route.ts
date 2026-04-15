@@ -23,7 +23,7 @@ export async function POST(req: Request) {
   response.cookies.set('anivex_session', token, {
     httpOnly: true,
     sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
+    secure: true,
     path: '/',
     maxAge: 60 * 60 * 24 * 7
   });
