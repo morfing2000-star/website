@@ -1,4 +1,6 @@
 import bcrypt from 'bcryptjs';
+import type { Role } from '@prisma/client';
+import { canManageRole as canManageRoleByRank } from '@/app/lib/roles';
 
 export async function hashPassword(password: string) {
   return bcrypt.hash(password, 12);
@@ -8,7 +10,6 @@ export async function verifyPassword(password: string, hash: string) {
   return bcrypt.compare(password, hash);
 }
 
-export function canManageRole(currentRole: string, targetRole: string) {
-  const rank = { USER: 1, MODERATOR: 2, ADMIN: 3, OWNER: 4 } as const;
-  return rank[currentRole as keyof typeof rank] > rank[targetRole as keyof typeof rank];
+export function canManageRole(currentRole: Role, targetRole: Role) {
+  return canManageRoleByRank(currentRole, targetRole);
 }
