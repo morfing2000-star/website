@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 
 const WatchHistorySchema = z.object({
   animeId: z.string().min(1),
-  episodeId: z.string().min(1).optional(),
+  episodeId: z.string().min(1),
   positionSec: z.number().int().min(0)
 });
 
@@ -24,11 +24,11 @@ export async function POST(req: Request) {
       profileId_animeId_episodeId: {
         profileId: profile.id,
         animeId: parsed.data.animeId,
-        episodeId: parsed.data.episodeId ?? null
+        episodeId: parsed.data.episodeId
       }
     },
     update: { positionSec: parsed.data.positionSec },
-    create: { profileId: profile.id, animeId: parsed.data.animeId, episodeId: parsed.data.episodeId ?? null, positionSec: parsed.data.positionSec },
+    create: { profileId: profile.id, animeId: parsed.data.animeId, episodeId: parsed.data.episodeId, positionSec: parsed.data.positionSec },
     include: { anime: true, episode: true }
   });
 
