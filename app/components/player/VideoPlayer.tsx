@@ -35,6 +35,7 @@ export function VideoPlayer({ src, animeId, episodeId, introEndSec = 85, nextEpi
       const positionSec = Math.floor(video.currentTime);
       localStorage.setItem(storageKey, String(positionSec));
       if (video.currentTime > introEndSec) setShowSkipIntro(false);
+      if (!episodeId) return;
       fetch('/api/watch-history', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
